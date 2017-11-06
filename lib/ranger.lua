@@ -1,21 +1,20 @@
 local CharacterTypes = require 'lib.character_types'
 
-Ranger = {
-  type = CharacterTypes.Ranger,
-  pos = {
-    x = 200,
-    y = 200
-  }
-};
+Ranger = { }
 
 -- Constructor
 --
 --
-function Ranger:new(obj)
-  obj = obj or {};
-  setmetatable(obj, self);
-  self.__index = self;
-  return obj;
+function Ranger:new()
+  local obj = {
+      type = CharacterTypes.Ranger,
+      pos = {
+        x = 200,
+        y = 200
+      }
+  }
+  self.__index = self
+  return setmetatable(obj, self)
 end
 
 function Ranger:load()
@@ -30,4 +29,4 @@ function Ranger:update(dt)
 
 end
 
-return Ranger;
+return Ranger

@@ -4,9 +4,8 @@ local character_select = require 'gui.character_select';
 
 client = Client:new();
 view_manager = ViewManager:new()
-
 function love.quit()
-  client:destroy()
+  client:destroy();
 end
 function love.keypressed(key, u)
    --Debug
@@ -20,8 +19,6 @@ function love.load()
 end
 
 function love.update(dt)
-  client:receiveMsg();
-
   if client.player then
     client.player:update(dt)
   end
@@ -33,8 +30,7 @@ function love.update(dt)
       v:update(dt);
     end
   end
-  
-  client:receiveMsg()
+
 end
 
 function love.draw()

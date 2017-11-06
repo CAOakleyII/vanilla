@@ -3,67 +3,58 @@ local Animation = require 'lib.animation'
 local Orientations = require 'lib.orientations'
 
 Warrior = {
-  type = CharacterTypes.Warrior,
-  orientation = Orientations.Right,
-  animations = {},
-  pos = {
-    x = 200,
-    y = 200
-  }
-};
+}
 
 -- Constructor
 --
 --
-function Warrior:new(obj)
-  obj = obj or {};
-  setmetatable(obj, self);
-  self.__index = self;
-  return obj;
+function Warrior:new()
+  local obj = {
+      type = CharacterTypes.Warrior,
+      orientation = Orientations.Right,
+      animations = {},
+      pos = {
+        x = 200,
+        y = 200
+      }
+  }
+  self.__index = self
+  return setmetatable(obj, self)
 end
 
 function Warrior:run()
-
-  if client then
-    self.animations['idle']:pause();
-    self.animations['run']:play();
-  end
+    self.animations['idle']:pause()
+    self.animations['run']:play()
 end
 
 function Warrior:idle()
-  if client then
-    self.animations['run']:pause();
-    self.animations['idle']:play();
-  end
+    self.animations['run']:pause()
+    self.animations['idle']:play()
 end
 
 function Warrior:attack()
-  if client then
-    self.animations['idle']:pause();
-    self.animations['run']:pause();
-    self.animations['attack']:play();
-  end
+    self.animations['idle']:pause()
+    self.animations['run']:pause()
+    self.animations['attack']:play()
 end
 function Warrior:load()
-  if client then
     -- idle
-    local idle = Animation:new({ name = 'idle', sprite_sheet_path = 'assets/Warrior_Idle.png' });
+    local idle = Animation:new('idle', 'assets/Warrior_Idle.png')
     idle:load(32,32)
 
     -- run
-    local run = Animation:new({ name = 'run', sprite_sheet_path = 'assets/Warrior_Run.png' });
-    run:load(32,32);
+    local run = Animation:new('run','assets/Warrior_Run.png')
+    run:load(32,32)
 
     -- attack
-    local attack = Animation:new({ name = 'attack', sprite_sheet_path = 'assets/Warrior_AttackNoWeapon.png' });
-    attack:load(64,64);
+    local attack = Animation:new('attack', 'assets/Warrior_AttackNoWeapon.png')
+    attack:load(64,64)
 
-    self.animations['idle'] = idle;
-    self.animations['run'] = run;
-    self.animations['attack'] = attack;
+    self.animations['idle'] = idle
+    self.animations['run'] = run
+    self.animations['attack'] = attack
 
-    idle:play();
-  end
+    idle:play()
 end
 
 function Warrior:draw()
@@ -78,4 +69,4 @@ function Warrior:update(dt)
   end
 end
 
-return Warrior;
+return Warrior

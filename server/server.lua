@@ -3,22 +3,23 @@ local mp = require "MessagePack"
 local NetworkMessageTypes = require 'lib.network_message_types'
 local Player = require 'lib.player'
 
-Server = {
-  port = 8080,
-  address = '*',
-  running = false,
-  players = {},
-  udp = socket.udp()
-}
+Server = {}
 
-Server.__index = Server;
+
+
 -- Constructor
 --
 --
-function Server:new(obj)
-  obj = obj or {};
-  setmetatable(obj, Server)
-  return obj;
+function Server:new()
+  local obj = {
+      port = 8080,
+      address = '*',
+      running = false,
+      players = {},
+      udp = socket.udp()
+  };
+  self.__index = self;
+  return setmetatable(obj, self)
 end
 
 function Server:start()
@@ -26,16 +27,6 @@ function Server:start()
   self.udp:setsockname(self.address, self.port);
   self.running = true;
   print ("server started on", self.address, self.port);
-  while true do
-    self:receivefrom()
-
-    -- update players
-     for k,v in pairs(self.players) do
-       if v then
-         v:update(dt);
-       end
-     end
-  end
 end
 
 function Server:broadcast(player, type, data)
@@ -52,7 +43,7 @@ function Server:sendto(player, type, data)
     data = data
   }
   if type == NetworkMessageTypes.OnConnected then
-    print (player.ip)
+    print (player.ip, player.port)
   end
 
   local packed_data = mp.pack(msg);
@@ -81,16 +72,11 @@ function Server:receiveMsg(msg, ip, port)
 end
 
 function Server:onConnected(player, ip, port)
-  local server_player = Player:new({
-    id = player.id,
-    name = player.name
-  }, player.character);
+  local server_player = Player:new(player.id, player.name, player.character);
   server_player.ip = ip;
   server_player.port = port;
+  server_player:load();
   self.players[player.id .. ip .. port] = server_player;
-  self.players[player.id .. ip .. port]:load();
-  print ('player connected: ' .. player.id .. ip .. port)
-
   self:broadcast(server_player, NetworkMessageTypes.OnConnected, player);
 end
 

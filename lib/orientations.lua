@@ -5,4 +5,4 @@ Orientations = {
   Up = 3
 }
 
-return Orientations;
+return Orientations

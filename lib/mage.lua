@@ -1,21 +1,21 @@
 local CharacterTypes = require 'lib.character_types'
 
-Mage = {
-  type = CharacterTypes.Mage,
-  pos = {
-    x = 200,
-    y = 200
-  }
-};
+Mage = {}
 
 -- Constructor
 --
 --
-function Mage:new(obj)
-  obj = obj or {};
-  setmetatable(obj, self);
-  self.__index = self;
-  return obj;
+function Mage:new()
+  local obj = {
+    type = CharacterTypes.Mage,
+    pos = {
+      x = 200,
+      y = 200
+    }
+  }
+
+  self.__index = self
+  return setmetatable(obj, self)
 end
 
 function Mage:load()
@@ -30,4 +30,4 @@ function Mage:update(dt)
 
 end
 
-return Mage;
+return Mage

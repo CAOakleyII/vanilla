@@ -4,4 +4,4 @@ CharacterTypes = {
   Ranger = 2
 }
 
-return CharacterTypes;
+return CharacterTypes

@@ -4,4 +4,4 @@ NetworkMessageTypes = {
   OnPlayerInput = 2
 }
 
-return NetworkMessageTypes;
+return NetworkMessageTypes
