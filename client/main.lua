@@ -19,6 +19,7 @@ function love.load()
 end
 
 function love.update(dt)
+  client:receive()
   if client.player then
     client.player:update(dt)
   end
@@ -26,7 +27,6 @@ function love.update(dt)
   -- update players
   for k,v in pairs(client.players) do
     if v then
-      print ('updating')
       v:update(dt);
     end
   end
@@ -41,7 +41,6 @@ function love.draw()
   -- draw players
   for k,v in pairs(client.players) do
     if v then
-      print ('drawing')
       v:draw();
     end
   end

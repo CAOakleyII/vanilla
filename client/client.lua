@@ -44,7 +44,6 @@ end
 
 function Client:receive()
   local packed_data = self.udp:receive()
-  print(packed_data)
   if packed_data then
     self:receiveMsg(packed_data)
   end
@@ -53,7 +52,6 @@ end
 function Client:receiveMsg(msg)
   local data = mp.unpack(msg)
   if data.type == NetworkMessageTypes.OnConnected then
-
     self:onConnected(data.data)
   elseif data.type == NetworkMessageTypes.OnDisconnected then
     self:onDisconnected(data.data)
