@@ -5,35 +5,55 @@ local Player = require 'lib.player';
 
 
 local character_select = Layout   {
-    flow = 'x',
-    {},
     {
-      flow = 'x',
-      id = 'characterSelect',
-      style = 'character_select_screen',
+      flow = 'y',
       {
-        type = 'button',
-        id = 'btnWarrior',
-        text = 'Warrior',
-        height = 32,
-        style = 'chararcter_button'
+        flow = 'x',
+        {},
+        {
+          flow = 'y',
+          {},
+          {
+            id = 'txtName',
+            type = 'text',
+            text = 'Name'
+          }
+        },
+        {}
       },
       {
-       type = 'button',
-       id = 'btnMage',
-       text = 'Mage',
-       height = 32,
-       style = 'chararcter_button'
-     },
-     {
-        type = 'button',
-        id = 'btnRanger',
-        text = 'Ranger',
-        height = 32,
-        style = 'chararcter_button'
-      }
-    },
-    {}
+        flow = 'x',
+        {},
+        {
+          flow = 'x',
+          id = 'characterSelect',
+          style = 'character_select_screen',
+          {
+            type = 'button',
+            id = 'btnWarrior',
+            text = 'Warrior',
+            height = 32,
+            style = 'chararcter_button'
+          },
+          {
+           type = 'button',
+           id = 'btnMage',
+           text = 'Mage',
+           height = 32,
+           style = 'chararcter_button'
+         },
+         {
+            type = 'button',
+            id = 'btnRanger',
+            text = 'Ranger',
+            height = 32,
+            style = 'chararcter_button'
+          }
+        },
+        {}
+      },
+      {}
+    }
   };
 
 character_select.id = 'characterSelect';
@@ -51,7 +71,7 @@ character_select:setStyle(character_select_style);
 
 character_select.btnWarrior:onPress(function (event)
   client:connect({
-    name =  'GaryTheGoat',
+    name =  character_select.txtName.value,
     character = CharacterTypes.Warrior
   });
   client.player:load(true);
@@ -60,7 +80,7 @@ end)
 
 character_select.btnMage:onPress(function (event)
   client:connect({
-    name = 'Cervial',
+    name = character_select.txtName.value,
     character = CharacterTypes.Mage
   });
   client.player:load(true);
@@ -69,7 +89,7 @@ end)
 
 character_select.btnRanger:onPress(function (event)
   client:connect({
-    name = 'Cervial',
+    name = character_select.txtName.value,
     character = CharacterTypes.Ranger
   });
   client.player:load(true);

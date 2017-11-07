@@ -48,8 +48,8 @@ function Server:sendto(player, type, data)
 
   local packed_data = mp.pack(msg)
   local success, err = self.udp:sendto(packed_data, player.ip, player.port)
-  if success then
-    print('sent')
+  if not success then
+    print(err)
   end
 end
 
@@ -72,12 +72,12 @@ function Server:receiveMsg(msg, ip, port)
 end
 
 function Server:onConnected(player, ip, port)
-  local server_player = Player:new(player.id, player.name, player.character)
+  local server_player = Player:new(player.id, player.name, player.character, player.pos)
   server_player.ip = ip
   server_player.port = port
   server_player:load()
   for k,v in pairs(self.players) do
-    self:sendto(server_player, NetworkMessageTypes.OnConnected,{id = v.id, name = v.name, character = v.character.type })
+    self:sendto(server_player, NetworkMessageTypes.OnConnected,{id = v.id, name = v.name, character = v.character.type, pos = v.character.pos })
   end
   self.players[player.id .. ip .. port] = server_player
   self:broadcast(server_player, NetworkMessageTypes.OnConnected, player)

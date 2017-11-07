@@ -8,12 +8,13 @@ Warrior = {
 -- Constructor
 --
 --
-function Warrior:new()
+function Warrior:new(pos)
   local obj = {
       type = CharacterTypes.Warrior,
       orientation = Orientations.Right,
       animations = {},
-      pos = {
+      speed = 5,
+      pos = pos or {
         x = 200,
         y = 200
       }
@@ -22,21 +23,35 @@ function Warrior:new()
   return setmetatable(obj, self)
 end
 
-function Warrior:run()
-    self.animations['idle']:pause()
-    self.animations['run']:play()
+function Warrior:run(orientation)
+  if orientation then
+    self.orientation = orientation
+  end
+  self.animations['attack']:pause()
+  self.animations['idle']:pause()
+  self.animations['run']:play()
 end
 
-function Warrior:idle()
-    self.animations['run']:pause()
-    self.animations['idle']:play()
+function Warrior:idle(orientation)
+  if orientation then
+    self.orientation = orientation
+  end
+  self.animations['attack']:pause()
+  self.animations['run']:pause()
+  self.animations['idle']:play()
 end
 
-function Warrior:attack()
+function Warrior:attack(orientation)
+  if orientation then
+    self.orientation = orientation
+  end
+    self.attacking = true
     self.animations['idle']:pause()
     self.animations['run']:pause()
     self.animations['attack']:play()
+
 end
+
 function Warrior:load()
     -- idle
     local idle = Animation:new('idle', 'assets/Warrior_Idle.png')
@@ -48,7 +63,7 @@ function Warrior:load()
 
     -- attack
     local attack = Animation:new('attack', 'assets/Warrior_AttackNoWeapon.png')
-    attack:load(64,64)
+    attack:load(32,32)
 
     self.animations['idle'] = idle
     self.animations['run'] = run

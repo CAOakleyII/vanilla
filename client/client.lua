@@ -6,10 +6,9 @@ Client = {}
 
 -- Constructor
 --
---
+-- 159.203.98.173
 function Client:new()
   local obj = {
-
       address = "localhost",
       port = 8080,
       connected = false,
@@ -63,7 +62,7 @@ end
 
 function Client:onConnected(player)
   print('player connected')
-  local client_player = Player:new(player.id, player.name, player.character)
+  local client_player = Player:new(player.id, player.name, player.character, player.pos)
   client_player:load()
   self.players[player.id] = client_player
 end

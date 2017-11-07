@@ -10,7 +10,7 @@ Player = {}
 -- Constructor
 --
 --
-function Player:new(id, name, character_type)
+function Player:new(id, name, character_type, pos)
   local obj = {
     id = id,
     name = name,
@@ -19,11 +19,11 @@ function Player:new(id, name, character_type)
   }
 
   if character_type == CharacterTypes.Warrior then
-    obj.character = Warrior:new()
+    obj.character = Warrior:new(pos)
   elseif character_type == CharacterTypes.Mage then
-    obj.character = Mage:new()
+    obj.character = Mage:new(pos)
   elseif character_type == CharacterTypes.Ranger then
-    obj.character = Ranger:new()
+    obj.character = Ranger:new(pos)
   end
   self.__index = self
   return setmetatable(obj, self)
@@ -53,23 +53,23 @@ end
 
 function Player:update(dt)
   if self.keys_down['w'] then
-    self.character:run()
-    self.character.pos.y = self.character.pos.y - 5
+    self.character:run(Orientations.Up)
+    self.character.pos.y = self.character.pos.y - self.character.speed
   elseif self.keys_down['a'] then
-    self.character:run()
-    self.character.pos.x = self.character.pos.x - 5
+    self.character:run(Orientations.Left)
+    self.character.pos.x = self.character.pos.x - self.character.speed
   elseif self.keys_down['s'] then
-    self.character:run()
-    self.character.pos.y = self.character.pos.y + 5
+    self.character:run(Orientations.Down)
+    self.character.pos.y = self.character.pos.y + self.character.speed
   elseif self.keys_down['d'] then
-    self.character:run()
-    self.character.pos.x = self.character.pos.x + 5
+    self.character:run(Orientations.Right)
+    self.character.pos.x = self.character.pos.x + self.character.speed
   else
     self.character:idle()
   end
 
   if self.keys_down['m1'] then
-    -- self.character:attack()
+    self.character:attack()
   end
   self.character:update(dt)
 end
