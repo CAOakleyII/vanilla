@@ -1,10 +1,10 @@
 local Orientations = require 'lib.orientations'
 local CharacterTypes = require 'lib.character_types'
 local NetworkMessageTypes = require 'lib.network_message_types'
-local Warrior = require 'lib.warrior'
-local Mage = require 'lib.mage'
-local Ranger = require 'lib.ranger'
-
+local Warrior = require 'lib.characters.warrior'
+local Mage = require 'lib.characters.mage'
+local Ranger = require 'lib.characters.ranger'
+local Camera = require 'hump.camera'
 Player = {}
 
 -- Constructor
@@ -47,11 +47,13 @@ function Player:load(bind_keys)
       self.keys_down['m' .. button] = nil
       client:send(NetworkMessageTypes.OnPlayerInput, { id = self.id, keys = self.keys_down })
     end
+    self.camera = Camera(self.character.pos.x, self.character.pos.y)
   end
   self.character:load()
 end
 
 function Player:update(dt)
+
   if self.keys_down['w'] then
     self.character:run(Orientations.Up)
     self.character.pos.y = self.character.pos.y - self.character.speed
@@ -71,6 +73,14 @@ function Player:update(dt)
   if self.keys_down['m1'] then
     self.character:attack()
   end
+
+
+  if self.camera then
+    print ('camera')
+    local dx,dy = self.character.pos.x - self.camera.x, self.character.pos.y - self.camera.y
+    self.camera:move(dx, dy)
+  end
+
   self.character:update(dt)
 end
 

@@ -1,13 +1,13 @@
 local CharacterTypes = require 'lib.character_types'
 
-Ranger = { }
+Mage = {}
 
 -- Constructor
 --
 --
-function Ranger:new()
+function Mage:new()
   local obj = {
-      type = CharacterTypes.Ranger,
+      type = CharacterTypes.Mage,
       orientation = Orientations.Right,
       animations = {},
       speed = 5,
@@ -21,15 +21,16 @@ function Ranger:new()
 end
 
 
-function Ranger:run(orientation)
+function Mage:run(orientation)
   if orientation then
     self.orientation = orientation
   end
+  self.animations['attack']:pause()
   self.animations['idle']:pause()
   self.animations['run']:play()
 end
 
-function Ranger:idle(orientation)
+function Mage:idle(orientation)
   if orientation then
     self.orientation = orientation
   end
@@ -37,18 +38,27 @@ function Ranger:idle(orientation)
   self.animations['idle']:play()
 end
 
-function Ranger:load()
+function Mage:attack(orientation)
+  if orientation then
+    self.orientation = orientation
+  end
+    self.animations['idle']:pause()
+    self.animations['run']:pause()
+    self.animations['attack']:play()
+end
+
+function Mage:load()
     -- idle
-    local idle = Animation:new('idle', 'assets/Ranger_Idle.png')
+    local idle = Animation:new('idle', 'assets/Mage_Idle.png')
     idle:load(32,32)
 
     -- run
-    local run = Animation:new('run','assets/Ranger_Run.png')
+    local run = Animation:new('run','assets/Mage_Run.png')
     run:load(32,32)
 
     -- attack
-    local attack = Animation:new('attack', 'assets/Ranger_AttackNoWeapon.png')
-    attack:load(64,64)
+    local attack = Animation:new('attack', 'assets/Mage_AttackNoWeapon.png')
+    attack:load(32,32)
 
     self.animations['idle'] = idle
     self.animations['run'] = run
@@ -57,16 +67,15 @@ function Ranger:load()
     idle:play()
 end
 
-function Ranger:draw()
+function Mage:draw()
   for k,v in pairs(self.animations) do
     v:draw(self.pos.x, self.pos.y, self.orientation)
   end
 end
 
-function Ranger:update(dt)
+function Mage:update(dt)
   for k,v in pairs(self.animations) do
     v:update(dt)
   end
 end
-
-return Ranger
+return Mage

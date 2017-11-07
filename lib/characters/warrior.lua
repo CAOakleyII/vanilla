@@ -1,17 +1,20 @@
 local CharacterTypes = require 'lib.character_types'
+local Animation = require 'lib.animation'
+local Orientations = require 'lib.orientations'
 
-Mage = {}
+Warrior = {
+}
 
 -- Constructor
 --
 --
-function Mage:new()
+function Warrior:new(pos)
   local obj = {
-      type = CharacterTypes.Mage,
+      type = CharacterTypes.Warrior,
       orientation = Orientations.Right,
       animations = {},
       speed = 5,
-      pos = {
+      pos = pos or {
         x = 200,
         y = 200
       }
@@ -20,35 +23,45 @@ function Mage:new()
   return setmetatable(obj, self)
 end
 
-
-function Mage:run(orientation)
+function Warrior:run(orientation)
   if orientation then
     self.orientation = orientation
   end
+  self.animations['attack']:pause()
   self.animations['idle']:pause()
   self.animations['run']:play()
 end
 
-function Mage:idle(orientation)
+function Warrior:idle(orientation)
   if orientation then
     self.orientation = orientation
   end
+  self.animations['attack']:pause()
   self.animations['run']:pause()
   self.animations['idle']:play()
 end
 
-function Mage:load()
+function Warrior:attack(orientation)
+  if orientation then
+    self.orientation = orientation
+  end
+    self.animations['idle']:pause()
+    self.animations['run']:pause()
+    self.animations['attack']:play()
+end
+
+function Warrior:load()
     -- idle
-    local idle = Animation:new('idle', 'assets/Mage_Idle.png')
+    local idle = Animation:new('idle', 'assets/Warrior_Idle.png')
     idle:load(32,32)
 
     -- run
-    local run = Animation:new('run','assets/Mage_Run.png')
+    local run = Animation:new('run','assets/Warrior_Run.png')
     run:load(32,32)
 
     -- attack
-    local attack = Animation:new('attack', 'assets/Mage_AttackNoWeapon.png')
-    attack:load(64,64)
+    local attack = Animation:new('attack', 'assets/Warrior_AttackNoWeapon.png')
+    attack:load(32,32)
 
     self.animations['idle'] = idle
     self.animations['run'] = run
@@ -57,15 +70,16 @@ function Mage:load()
     idle:play()
 end
 
-function Mage:draw()
+function Warrior:draw()
   for k,v in pairs(self.animations) do
     v:draw(self.pos.x, self.pos.y, self.orientation)
   end
 end
 
-function Mage:update(dt)
+function Warrior:update(dt)
   for k,v in pairs(self.animations) do
     v:update(dt)
   end
 end
-return Mage
+
+return Warrior

@@ -1,20 +1,17 @@
 local CharacterTypes = require 'lib.character_types'
-local Animation = require 'lib.animation'
-local Orientations = require 'lib.orientations'
 
-Warrior = {
-}
+Zombie = {}
 
 -- Constructor
 --
 --
-function Warrior:new(pos)
+function Zombie:new()
   local obj = {
-      type = CharacterTypes.Warrior,
-      orientation = Orientations.Right,
+      type = CharacterTypes.Zombie,
+      orientation = Orientations.Left,
       animations = {},
-      speed = 5,
-      pos = pos or {
+      speed = 3,
+      pos = {
         x = 200,
         y = 200
       }
@@ -23,7 +20,8 @@ function Warrior:new(pos)
   return setmetatable(obj, self)
 end
 
-function Warrior:run(orientation)
+
+function Zombie:run(orientation)
   if orientation then
     self.orientation = orientation
   end
@@ -32,37 +30,34 @@ function Warrior:run(orientation)
   self.animations['run']:play()
 end
 
-function Warrior:idle(orientation)
+function Zombie:idle(orientation)
   if orientation then
     self.orientation = orientation
   end
-  self.animations['attack']:pause()
   self.animations['run']:pause()
   self.animations['idle']:play()
 end
 
-function Warrior:attack(orientation)
+function Zombie:attack(orientation)
   if orientation then
     self.orientation = orientation
   end
-    self.attacking = true
     self.animations['idle']:pause()
     self.animations['run']:pause()
     self.animations['attack']:play()
-
 end
 
-function Warrior:load()
+function Zombie:load()
     -- idle
-    local idle = Animation:new('idle', 'assets/Warrior_Idle.png')
+    local idle = Animation:new('idle', 'assets/Zombie_Idle.png')
     idle:load(32,32)
 
     -- run
-    local run = Animation:new('run','assets/Warrior_Run.png')
+    local run = Animation:new('run','assets/Zombie_Run.png')
     run:load(32,32)
 
     -- attack
-    local attack = Animation:new('attack', 'assets/Warrior_AttackNoWeapon.png')
+    local attack = Animation:new('attack', 'assets/Zombie_Attack.png')
     attack:load(32,32)
 
     self.animations['idle'] = idle
@@ -72,16 +67,15 @@ function Warrior:load()
     idle:play()
 end
 
-function Warrior:draw()
+function Zombie:draw()
   for k,v in pairs(self.animations) do
     v:draw(self.pos.x, self.pos.y, self.orientation)
   end
 end
 
-function Warrior:update(dt)
+function Zombie:update(dt)
   for k,v in pairs(self.animations) do
     v:update(dt)
   end
 end
-
-return Warrior
+return Zombie

@@ -1,4 +1,4 @@
-local mp = require "MessagePack"
+local mp = require "packages.msgpack.MessagePack"
 local socket = require "socket"
 local NetworkMessageTypes = require 'lib.network_message_types'
 local uuid = require 'packages.uuid.uuid'

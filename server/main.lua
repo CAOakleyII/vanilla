@@ -4,7 +4,7 @@ package.path = package.path ..
 './packages/socket/?.lua;' ..
 './packages/uuid/?.lua;';
 
-
+local sti = require "packages.sti"
 local Server = require 'server.server';
 local NetworkMessageTypes = require 'lib.network_message_types'
 print "Starting server..."
