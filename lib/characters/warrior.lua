@@ -8,16 +8,18 @@ Warrior = {
 -- Constructor
 --
 --
-function Warrior:new(pos)
+function Warrior:new(pos, id)
+  pos = pos or { x = 200, y = 200 }
   local obj = {
       type = CharacterTypes.Warrior,
       orientation = Orientations.Right,
+      body = { width = 32, height = 32 },
+      rect = { name = id },
       animations = {},
-      speed = 5,
-      pos = pos or {
-        x = 200,
-        y = 200
-      }
+      speed = 96,
+      current_health = 100,
+      max_health = 100,
+      pos = pos
   }
   self.__index = self
   return setmetatable(obj, self)
@@ -51,6 +53,7 @@ function Warrior:attack(orientation)
 end
 
 function Warrior:load()
+
     -- idle
     local idle = Animation:new('idle', 'assets/Warrior_Idle.png')
     idle:load(32,32)
@@ -71,6 +74,11 @@ function Warrior:load()
 end
 
 function Warrior:draw()
+  love.graphics.setColor(255,0,0);
+  love.graphics.rectangle("line", self.pos.x - 5, self.pos.y - 10, 40, 5)
+  love.graphics.rectangle("fill", self.pos.x - 5, self.pos.y - 10, self.current_health / self.max_health * 40, 5)
+  love.graphics.setColor(255,255,255);
+
   for k,v in pairs(self.animations) do
     v:draw(self.pos.x, self.pos.y, self.orientation)
   end

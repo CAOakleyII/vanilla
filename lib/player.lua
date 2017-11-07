@@ -4,7 +4,7 @@ local NetworkMessageTypes = require 'lib.network_message_types'
 local Warrior = require 'lib.characters.warrior'
 local Mage = require 'lib.characters.mage'
 local Ranger = require 'lib.characters.ranger'
-local Camera = require 'hump.camera'
+
 Player = {}
 
 -- Constructor
@@ -15,11 +15,12 @@ function Player:new(id, name, character_type, pos)
     id = id,
     name = name,
     character = nil,
-    keys_down = {}
+    keys_down = {},
+    local_player = false
   }
 
   if character_type == CharacterTypes.Warrior then
-    obj.character = Warrior:new(pos)
+    obj.character = Warrior:new(pos, id)
   elseif character_type == CharacterTypes.Mage then
     obj.character = Mage:new(pos)
   elseif character_type == CharacterTypes.Ranger then
@@ -31,6 +32,7 @@ end
 
 function Player:load(bind_keys)
   if bind_keys then
+    self.local_player = true;
     function love.keypressed(key)
       self.keys_down[key] = true
       client:send(NetworkMessageTypes.OnPlayerInput, { id = self.id, keys = self.keys_down })
@@ -47,50 +49,61 @@ function Player:load(bind_keys)
       self.keys_down['m' .. button] = nil
       client:send(NetworkMessageTypes.OnPlayerInput, { id = self.id, keys = self.keys_down })
     end
-    self.camera = Camera(self.character.pos.x, self.character.pos.y)
+    camera:lookAt(self.character.pos.x, self.character.pos.y)
   end
   self.character:load()
+  world:add(self, self.character.pos.x + offsetX, self.character.pos.y + offsetY, self.character.body.width, self.character.body.height)
 end
 
 function Player:update(dt)
+  self.character:idle()
 
   if self.keys_down['w'] then
     self.character:run(Orientations.Up)
-    self.character.pos.y = self.character.pos.y - self.character.speed
-  elseif self.keys_down['a'] then
+    self.character.pos.x, self.character.pos.y = self:move(self.character.pos.x, self.character.pos.y - self.character.speed * dt)
+  end
+  if self.keys_down['a'] then
     self.character:run(Orientations.Left)
-    self.character.pos.x = self.character.pos.x - self.character.speed
-  elseif self.keys_down['s'] then
+    self.character.pos.x, self.character.pos.y = self:move(self.character.pos.x - self.character.speed * dt, self.character.pos.y)
+  end
+  if self.keys_down['s'] then
     self.character:run(Orientations.Down)
-    self.character.pos.y = self.character.pos.y + self.character.speed
-  elseif self.keys_down['d'] then
+    self.character.pos.x, self.character.pos.y = self:move(self.character.pos.x, self.character.pos.y + self.character.speed * dt)
+  end
+  if self.keys_down['d'] then
     self.character:run(Orientations.Right)
-    self.character.pos.x = self.character.pos.x + self.character.speed
-  else
-    self.character:idle()
+    self.character.pos.x, self.character.pos.y = self:move(self.character.pos.x + self.character.speed * dt, self.character.pos.y)
   end
 
   if self.keys_down['m1'] then
     self.character:attack()
   end
 
-
-  if self.camera then
-    print ('camera')
-    local dx,dy = self.character.pos.x - self.camera.x, self.character.pos.y - self.camera.y
-    self.camera:move(dx, dy)
+  if self.local_player then
+    local dx,dy = self.character.pos.x - camera.x, self.character.pos.y - camera.y;
+    camera:move(dx, dy)
   end
 
   self.character:update(dt)
 end
 
+function Player:move(goalX, goalY)
+  local actualX, actualY, cols, len = world:move(self, goalX + offsetX, goalY + offsetY);
+  for i=1,len do
+     -- print('collided with ' .. tostring(cols[i].other.x) .. cols[i].other.y)
+  end
+
+  return actualX - offsetX, actualY - offsetY
+end
+
 function Player:draw()
-  love.graphics.print(self.name, self.character.pos.x - 8, self.character.pos.y - 20)
+  love.graphics.setColor(0,0,0);
+  love.graphics.print(self.name, self.character.pos.x, self.character.pos.y - 25)
   self.character:draw()
 end
 
 function Player:destroy()
-  --implement
+  -- implement
 end
 
 return Player

@@ -42,9 +42,11 @@ function Client:send(type, data)
 end
 
 function Client:receive()
-  local packed_data = self.udp:receive()
-  if packed_data then
-    self:receiveMsg(packed_data)
+  if client.connected then
+    local packed_data = self.udp:receive()
+    if packed_data then
+      self:receiveMsg(packed_data)
+    end
   end
 end
 

@@ -5,15 +5,18 @@ Zombie = {}
 -- Constructor
 --
 --
-function Zombie:new()
+function Zombie:new(pos)
   local obj = {
       type = CharacterTypes.Zombie,
       orientation = Orientations.Left,
       animations = {},
+      body = nil,
       speed = 3,
+      current_health = 50,
+      max_health = 50,
       pos = {
-        x = 200,
-        y = 200
+        x = pos.x,
+        y = pos.y
       }
   }
   self.__index = self
@@ -48,12 +51,13 @@ function Zombie:attack(orientation)
 end
 
 function Zombie:load()
+
     -- idle
     local idle = Animation:new('idle', 'assets/Zombie_Idle.png')
     idle:load(32,32)
 
     -- run
-    local run = Animation:new('run','assets/Zombie_Run.png')
+    local run = Animation:new('run','assets/Zombie_Walk.png')
     run:load(32,32)
 
     -- attack
@@ -68,6 +72,11 @@ function Zombie:load()
 end
 
 function Zombie:draw()
+  love.graphics.setColor(255,0,0);
+  love.graphics.rectangle("line", self.pos.x - 5, self.pos.y - 10, 40, 5)
+  love.graphics.rectangle("fill", self.pos.x - 5, self.pos.y - 10, self.current_health / self.max_health * 40, 5)
+  love.graphics.setColor(255,255,255);
+
   for k,v in pairs(self.animations) do
     v:draw(self.pos.x, self.pos.y, self.orientation)
   end

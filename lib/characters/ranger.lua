@@ -9,8 +9,11 @@ function Ranger:new()
   local obj = {
       type = CharacterTypes.Ranger,
       orientation = Orientations.Right,
+      body = { width = 32, height = 32 },
       animations = {},
-      speed = 5,
+      speed = 96,
+      current_health = 100,
+      max_health = 100,
       pos = {
         x = 200,
         y = 200
@@ -69,6 +72,11 @@ function Ranger:load()
 end
 
 function Ranger:draw()
+  love.graphics.setColor(255,0,0);
+  love.graphics.rectangle("line", self.pos.x - 5, self.pos.y - 10, 40, 5)
+  love.graphics.rectangle("fill", self.pos.x - 5, self.pos.y - 10, self.current_health / self.max_health * 40, 5)
+  love.graphics.setColor(255,255,255);
+
   for k,v in pairs(self.animations) do
     v:draw(self.pos.x, self.pos.y, self.orientation)
   end

@@ -5,8 +5,6 @@ local Player = require 'lib.player'
 
 Server = {}
 
-
-
 -- Constructor
 --
 --
