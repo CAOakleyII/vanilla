@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" tiledversion="1.0.3" orientation="orthogonal" renderorder="right-down" width="100" height="100" tilewidth="16" tileheight="16" nextobjectid="32">
+<map version="1.0" tiledversion="1.0.3" orientation="orthogonal" renderorder="right-down" width="100" height="100" tilewidth="16" tileheight="16" nextobjectid="33">
  <tileset firstgid="1" name="Water" tilewidth="16" tileheight="16" tilecount="2805" columns="51">
   <image source="water.png" width="816" height="880"/>
  </tileset>
@@ -227,6 +227,12 @@
   <object id="12" name="Zombie_SpawnPoint" x="337" y="817.5" width="13" height="14">
    <properties>
     <property name="EnemyType" value="Zombie"/>
+   </properties>
+  </object>
+  <object id="32" x="40" y="107" width="18" height="18">
+   <properties>
+    <property name="EnemyType" value="Zombie"/>
+    <property name="collidable" type="bool" value="true"/>
    </properties>
   </object>
  </objectgroup>

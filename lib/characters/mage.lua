@@ -28,26 +28,27 @@ function Mage:run(orientation)
   if orientation then
     self.orientation = orientation
   end
-  self.animations['attack']:pause()
-  self.animations['idle']:pause()
-  self.animations['run']:play()
+  self.animations.attack:pause()
+  self.animations.idle:pause()
+  self.animations.run:play()
 end
 
 function Mage:idle(orientation)
   if orientation then
     self.orientation = orientation
   end
-  self.animations['run']:pause()
-  self.animations['idle']:play()
+  self.animations.attack:pause()
+  self.animations.run:pause()
+  self.animations.idle:play()
 end
 
 function Mage:attack(orientation)
   if orientation then
     self.orientation = orientation
   end
-    self.animations['idle']:pause()
-    self.animations['run']:pause()
-    self.animations['attack']:play()
+    self.animations.idle:pause()
+    self.animations.run:pause()
+    self.animations.attack:play()
 end
 
 function Mage:load()
@@ -63,9 +64,9 @@ function Mage:load()
     local attack = Animation:new('attack', 'assets/Mage_AttackNoWeapon.png')
     attack:load(32,32)
 
-    self.animations['idle'] = idle
-    self.animations['run'] = run
-    self.animations['attack'] = attack
+    self.animations.idle = idle
+    self.animations.run = run
+    self.animations.attack = attack
 
     idle:play()
 end

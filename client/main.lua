@@ -4,10 +4,11 @@ local character_select = require 'gui.character_select';
 local sti = require "packages.sti"
 local bump = require "packages.bump.bump"
 local Camera = require 'packages.hump.camera'
-local Zombie = require 'lib.enemies.zombie'
+local ECS = require 'lib.enemy_component_system'
 
 camera = Camera()
-client = Client:new();
+client = Client:new()
+ecs = ECS:new()
 view_manager = ViewManager:new()
 
 function love.quit()
@@ -28,23 +29,12 @@ function love.load()
   map = sti("assets/tutorial_island.lua", { "bump" }, offsetX, offsetY)
 	world = bump.newWorld(32)
 
-
   -- Prepare collision objects
 	map:bump_init(world)
-  -- load in enemies and init objects
-  enemies = {};
-  for k, object in pairs(map.objects) do
-    if object.properties.EnemyType == "Zombie" then
-      local enemy = Zombie:new({ x = object.x, y = object.y })
-      table.insert(enemies, enemy)
-      enemy:load()
-    end
+
+  ecs:load(map)
+
   end
-
-  -- Remove unneeded enemy layer
-  map:removeLayer("Enemies")
-
-end
 
 function love.update(dt)
   -- receive network updates
@@ -62,7 +52,7 @@ function love.update(dt)
     end
 
     -- update enemies
-    for k,v in pairs(enemies) do
+    for k,v in pairs(ecs.enemies) do
       if v then
         v:update(dt)
       end
@@ -87,7 +77,7 @@ function love.draw()
     end
 
     -- draw enemies
-    for k,v in pairs(enemies) do
+    for k,v in pairs(ecs.enemies) do
       if v then
         v:draw()
       end

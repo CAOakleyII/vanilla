@@ -1,9 +1,3 @@
-package.path = package.path ..
-';./lib/?.lua;../server/?.lua;' ..
-'./packages/msgpack/?.lua;' ..
-'./packages/socket/?.lua;' ..
-'./packages/uuid/?.lua;';
-
 local sti = require "packages.sti"
 local Server = require 'server.server';
 local NetworkMessageTypes = require 'lib.network_message_types'
@@ -11,11 +5,13 @@ local sti = require "packages.sti"
 local bump = require "packages.bump.bump"
 local Camera = require 'packages.hump.camera'
 local Zombie = require 'lib.enemies.zombie'
-camera = Camera()
-print "Starting server..."
+local ECS = require 'lib.enemy_component_system'
 
+camera = Camera()
+ecs = ECS:new()
 server = Server:new();
 
+print "Starting server..."
 
 function love.keypressed(key, u)
    --Debug
@@ -30,21 +26,11 @@ function love.load()
   map = sti("assets/tutorial_island.lua", { "bump" }, offsetX, offsetY)
   world = bump.newWorld(32)
 
+  -- Spawn initial enemies
+  ecs:load(map)
+
   -- Prepare collision objects
 	map:bump_init(world)
-  -- load in enemies and init objects
-  enemies = {};
-  for k, object in pairs(map.objects) do
-    if object.properties.EnemyType == "Zombie" then
-      local enemy = Zombie:new({ x = object.x, y = object.y })
-      table.insert(enemies, enemy)
-      enemy:load()
-    end
-  end
-
-  -- Remove unneeded enemy layer
-  map:removeLayer("Enemies")
-
 
   server:start();
 end

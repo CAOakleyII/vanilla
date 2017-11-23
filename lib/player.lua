@@ -76,7 +76,8 @@ function Player:update(dt)
   end
 
   if self.keys_down['m1'] then
-    self.character:attack()
+    local x,y = camera:mousePosition()
+    self.character:auto_attack(x,y)
   end
 
   if self.local_player then
@@ -89,10 +90,6 @@ end
 
 function Player:move(goalX, goalY)
   local actualX, actualY, cols, len = world:move(self, goalX + offsetX, goalY + offsetY);
-  for i=1,len do
-     -- print('collided with ' .. tostring(cols[i].other.x) .. cols[i].other.y)
-  end
-
   return actualX - offsetX, actualY - offsetY
 end
 
