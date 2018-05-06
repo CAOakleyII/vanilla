@@ -22,9 +22,9 @@ function Player:new(id, name, character_type, pos)
   if character_type == CharacterTypes.Warrior then
     obj.character = Warrior:new(pos, id)
   elseif character_type == CharacterTypes.Mage then
-    obj.character = Mage:new(pos)
+    obj.character = Mage:new(pos, id)
   elseif character_type == CharacterTypes.Ranger then
-    obj.character = Ranger:new(pos)
+    obj.character = Ranger:new(pos, id)
   end
   self.__index = self
   return setmetatable(obj, self)
@@ -42,7 +42,8 @@ function Player:load(bind_keys)
       client:send(NetworkMessageTypes.OnPlayerInput, { id = self.id, keys = self.keys_down })
     end
     function love.mousepressed(x, y, button)
-      self.keys_down['m' .. button] = true
+      local x,y  = camera:mousePosition();
+      self.keys_down['m' .. button] =  { x = x , y = y };
       client:send(NetworkMessageTypes.OnPlayerInput, { id = self.id, keys = self.keys_down })
     end
     function love.mousereleased(x, y, button)
@@ -75,13 +76,13 @@ function Player:update(dt)
     self.character.pos.x, self.character.pos.y = self:move(self.character.pos.x + self.character.speed * dt, self.character.pos.y)
   end
 
-  if self.keys_down['m1'] then
-    local x,y = camera:mousePosition()
-    self.character:auto_attack(x,y)
+  if self.keys_down['m1'] and self.character.skills.auto_attack.current_cool_down <= 0 then
+    local pos = self.keys_down['m1'];
+    self.character:auto_attack(pos.x, pos.y)
   end
 
   if self.local_player then
-    local dx,dy = self.character.pos.x - camera.x, self.character.pos.y - camera.y;
+    local dx,dy = self.character.pos.x - camera.x, self.character.pos.y - camera.y
     camera:move(dx, dy)
   end
 
@@ -89,13 +90,14 @@ function Player:update(dt)
 end
 
 function Player:move(goalX, goalY)
-  local actualX, actualY, cols, len = world:move(self, goalX + offsetX, goalY + offsetY);
+  local actualX, actualY, cols, len = world:move(self, goalX + offsetX, goalY + offsetY)
   return actualX - offsetX, actualY - offsetY
 end
 
 function Player:draw()
   love.graphics.setColor(0,0,0);
   love.graphics.print(self.name, self.character.pos.x, self.character.pos.y - 25)
+  love.graphics.print(self.character.pos.x .. ", ".. self.character.pos.y, self.character.pos.x, self.character.pos.y - 50)
   self.character:draw()
 end
 

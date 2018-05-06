@@ -75,10 +75,10 @@ function Server:onConnected(player, ip, port)
   server_player.port = port
   server_player:load()
   for k,v in pairs(self.players) do
-    self:sendto(server_player, NetworkMessageTypes.OnConnected,{id = v.id, name = v.name, character = v.character.type, pos = v.character.pos })
+    self:sendto(server_player, NetworkMessageTypes.OnConnected, { id = v.id, name = v.name, character = v.character.type, x = v.character.pos.x, y = v.character.pos.y })
   end
   self.players[player.id .. ip .. port] = server_player
-  self:broadcast(server_player, NetworkMessageTypes.OnConnected, player)
+  self:broadcast(server_player, NetworkMessageTypes.OnConnected, { id = player.id, name = player.name, character = player.character, x = server_player.character.pos.x, y = server_player.character.pos.y })
 end
 
 function Server:onDisconnected(id, ip, port)

@@ -63,8 +63,8 @@ end
 
 
 function Client:onConnected(player)
-  print('player connected')
-  local client_player = Player:new(player.id, player.name, player.character, player.pos)
+  local pos = { x = player.x, y = player.y }
+  local client_player = Player:new(player.id, player.name, player.character, pos)
   client_player:load()
   self.players[player.id] = client_player
 end

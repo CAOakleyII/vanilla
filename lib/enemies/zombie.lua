@@ -76,6 +76,7 @@ function Zombie:draw()
   love.graphics.rectangle("line", self.pos.x - 5, self.pos.y - 10, 40, 5)
   love.graphics.rectangle("fill", self.pos.x - 5, self.pos.y - 10, self.current_health / self.max_health * 40, 5)
   love.graphics.setColor(255,255,255);
+  love.graphics.print(self.pos.x .. ", " .. self.pos.y, self.pos.x, self.pos.y + 50)
 
   for k,v in pairs(self.animations) do
     v:draw(self.pos.x, self.pos.y, self.orientation)

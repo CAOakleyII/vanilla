@@ -1,12 +1,15 @@
-local AutoAttack = require 'lib.skills.ranger.auto_attack'
 local CharacterTypes = require 'lib.character_types'
+local Animation = require 'lib.animation'
+local AutoAttack = require 'lib.skills.ranger.auto_attack'
 
 Ranger = { }
 
 -- Constructor
 --
 --
-function Ranger:new()
+function Ranger:new(pos, id)
+  pos = pos or { x = 200, y = 200 }
+
   local obj = {
       type = CharacterTypes.Ranger,
       orientation = Orientations.Right,
@@ -18,10 +21,7 @@ function Ranger:new()
       speed = 96,
       current_health = 100,
       max_health = 100,
-      pos = {
-        x = 200,
-        y = 200
-      }
+      pos = pos
   }
   self.__index = self
   return setmetatable(obj, self)
@@ -61,8 +61,12 @@ function Ranger:auto_attack(targetx, targety, orientation)
   end
   self:attack(orientation)
   self.skills.auto_attack:attack(self.pos.x, self.pos.y, targetx, targety)
-
+  print('self:' .. self.pos.x .. ", " .. self.pos.y)
+  print('target:' .. targetx .. ", " .. targety)
+  print('offsets:' .. offsetX .. ", " .. offsetY)
+  print('camera: ' .. camera.x .. ", " .. camera.y)
 end
+
 function Ranger:load()
     -- idle
     local idle = Animation:new('idle', 'assets/Ranger_Idle.png')

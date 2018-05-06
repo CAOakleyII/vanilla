@@ -14,11 +14,11 @@ function AutoAttack:new()
   return setmetatable(obj, self)
 end
 
-function AutoAttack:attack(x, y, targetx, targety)
+function AutoAttack:attack(x,y, targetx, targety)
   self.current_cool_down = self.cool_down
-
+  
   local angle = math.atan2(targety - y, targetx - x);
-  local a = { name = "ranger_auto_attack", x = x , y = y, angle = angle }
+  local a = { name = "warrior_auto_attack", x = x , y = y, angle = angle }
   world:add(a, x, y, self.width, self.height)
   a.animation = self:load()
   table.insert(self.objects, a)
@@ -28,6 +28,7 @@ end
 function AutoAttack:load()
   return love.graphics.newImage('assets/spear.png')
 end
+
 
 function AutoAttack:update(dt)
   if (self.current_cool_down > 0) then

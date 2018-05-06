@@ -1,6 +1,7 @@
 local CharacterTypes = require 'lib.character_types'
 local Animation = require 'lib.animation'
 local Orientations = require 'lib.orientations'
+local AutoAttack = require 'lib.skills.warrior.auto_attack'
 
 Warrior = {
 }
@@ -16,6 +17,9 @@ function Warrior:new(pos, id)
       body = { width = 32, height = 32 },
       rect = { name = id },
       animations = {},
+      skills = {
+        auto_attack = AutoAttack:new()
+      },
       speed = 96,
       current_health = 100,
       max_health = 100,
@@ -53,6 +57,14 @@ function Warrior:attack(orientation)
     self.animations.attack:play()
 end
 
+function Warrior:auto_attack(targetx, targety, orientation)
+  if orientation then
+    self.orientation = orientation
+  end
+  self:attack(orientation)
+  self.skills.auto_attack:attack(self.pos.x, self.pos.y, targetx, targety)
+end
+
 function Warrior:load()
 
     -- idle
@@ -83,10 +95,18 @@ function Warrior:draw()
   for k,v in pairs(self.animations) do
     v:draw(self.pos.x, self.pos.y, self.orientation)
   end
+
+  for k,v in pairs(self.skills) do
+    v:draw()
+  end
 end
 
 function Warrior:update(dt)
   for k,v in pairs(self.animations) do
+    v:update(dt)
+  end
+
+  for k,v in pairs(self.skills) do
     v:update(dt)
   end
 end

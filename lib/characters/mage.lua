@@ -1,23 +1,26 @@
 local CharacterTypes = require 'lib.character_types'
+local Animation = require 'lib.animation'
+local AutoAttack = require 'lib.skills.mage.auto_attack'
 
 Mage = {}
 
 -- Constructor
 --
 --
-function Mage:new()
+function Mage:new(pos, id)
+  pos = pos or { x = 200, y = 200 }
   local obj = {
       type = CharacterTypes.Mage,
       orientation = Orientations.Right,
       body = { width = 32, height = 32 },
       animations = {},
+      skills = {
+        auto_attack = AutoAttack:new()
+      },
       speed = 96,
       current_health = 100,
       max_health = 100,
-      pos = {
-        x = 200,
-        y = 200
-      }
+      pos = pos
   }
   self.__index = self
   return setmetatable(obj, self)
@@ -51,6 +54,14 @@ function Mage:attack(orientation)
     self.animations.attack:play()
 end
 
+function Mage:auto_attack(targetx, targety, orientation)
+  if orientation then
+    self.orientation = orientation
+  end
+  self:attack(orientation)
+  self.skills.auto_attack:attack(self.pos.x, self.pos.y, targetx, targety)
+end
+
 function Mage:load()
     -- idle
     local idle = Animation:new('idle', 'assets/Mage_Idle.png')
@@ -80,10 +91,18 @@ function Mage:draw()
   for k,v in pairs(self.animations) do
     v:draw(self.pos.x, self.pos.y, self.orientation)
   end
+
+  for k,v in pairs(self.skills) do
+    v:draw()
+  end
 end
 
 function Mage:update(dt)
   for k,v in pairs(self.animations) do
+    v:update(dt)
+  end
+
+  for k,v in pairs(self.skills) do
     v:update(dt)
   end
 end
